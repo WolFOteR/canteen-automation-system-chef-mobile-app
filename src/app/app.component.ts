@@ -18,7 +18,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      if(this.accountService.checkUserIsLoggedIn) {
+      if(this.accountService.checkUserIsLoggedIn()) {
         this.rootPage = TabsPage;
       }
     });

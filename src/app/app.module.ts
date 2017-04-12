@@ -3,12 +3,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+import { ReversePipe } from '../pipes/reverse.pipe';
+import { OrderFilterByStatusPipe } from '../pipes/order.pipe';
+
 import { LoginPage } from '../pages/login/login';
 import { AcceptedOrdersPage } from '../pages/accepted-orders/accepted-orders';
 import { PendingOrdersPage } from '../pages/pending-orders/pending-orders';
 import { TabsPage } from '../pages/tabs/tabs';
+import { OrderDetailsPage } from '../pages/order-details/order-details';
 
 import { AccountService } from '../services/account-service';
+import { OrderService } from '../services/order-service';
+import { FoodService } from '../services/food-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -35,7 +41,10 @@ export const firebaseAuthConfig = {
     AcceptedOrdersPage,
     LoginPage,
     PendingOrdersPage,
-    TabsPage
+    OrderDetailsPage,
+    TabsPage,
+    OrderFilterByStatusPipe,
+    ReversePipe
   ],
   imports: [
     BrowserModule,
@@ -51,13 +60,16 @@ export const firebaseAuthConfig = {
     AcceptedOrdersPage,
     LoginPage,
     PendingOrdersPage,
-    TabsPage
+    TabsPage,
+    OrderDetailsPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    AccountService
+    AccountService,
+    OrderService,
+    FoodService
   ]
 })
 export class AppModule { }
