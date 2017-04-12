@@ -76,4 +76,12 @@ export class AccountService {
             })
         })
     }
+
+    checkUserIsLoggedIn() {
+        if (localStorage.getItem('uid')) {
+            return true;
+        }
+
+        else return false;
+    }
 }

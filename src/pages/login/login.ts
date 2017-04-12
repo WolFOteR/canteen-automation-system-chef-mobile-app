@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { TabsPage } from '../tabs/tabs';
 import { AccountService } from '../../services/account-service';
 
 @Component({
@@ -13,6 +14,8 @@ export class LoginPage {
   }
 
   clickLogin(email: string, password: string) {
-    this.accountService.loginUser(email, password).then(() => {}).catch(() => {});
+    this.accountService.loginUser(email, password).then(() => {
+      this.navCtrl.setRoot({ component: TabsPage }.component);
+    }).catch(() => {});
   }
 }
