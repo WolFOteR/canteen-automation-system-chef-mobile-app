@@ -15,4 +15,9 @@
         </h2>
     </button>
   </ion-list>
+  <div *ngIf="(orderList | async | filterOrderByStatus: 'Assigned to Chef')?.length == 0" text-center class="center">
+    <h2>
+      No pending orders currently available.
+    </h2>
+  </div>
 </ion-content>

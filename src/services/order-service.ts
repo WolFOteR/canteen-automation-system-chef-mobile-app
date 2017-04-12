@@ -39,17 +39,17 @@ export class OrderService {
         });
     }
 
-    acceptOrder(orderId: string) {
+    updateOrderStatus(orderId: string, status: string) {
         let loading = this.loadingCtrl.create({
-            content: 'Accepting order...'
+            content: 'Updating order...'
         });
         loading.present();
         return new Promise((res, rej) => {
             this.angularFire.database.object('/orders/' + orderId + '/status').update({
-                state: 'Accepted by Chef'
+                state: status
             }).then(() => {
                 this.toastCtrl.create({
-                    message: 'Order accepted.',
+                    message: 'Order updated.',
                     duration: 4500
                 }).present().then(() => loading.dismiss());
                 res();

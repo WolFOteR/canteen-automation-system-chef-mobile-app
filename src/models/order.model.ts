@@ -8,5 +8,6 @@ export interface Order {
     status: OrderStatus,
     amount: number,
     items: Array<BucketItem>,
-    user?: User
+    user?: User,
+    $key?: string
 }

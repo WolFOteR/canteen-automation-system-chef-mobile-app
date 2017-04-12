@@ -28,16 +28,8 @@
     </button>
   </ion-list>
   <ion-fab bottom right *ngIf="selectedOrder.items.length > 0">
-    <button ion-fab mini (click)="clickAccept(selectedOrder.$key)">
+    <button ion-fab mini (click)="clickAccept(selectedOrder)">
       <ion-icon name="checkmark"></ion-icon>
       </button>
   </ion-fab>
-  <!--<div>-->
-  <!--<ion-label ion-label-left>Total amount: {{selectedOrder.amount}}</ion-label>-->
-  <!--</div>-->
-  <!--<div *ngIf="OrderDetail.items.length? == 0">
-    <h2>
-      Sorry, you don't have any items in your bucket.
-    </h2>
-  </div>-->
 </ion-content>

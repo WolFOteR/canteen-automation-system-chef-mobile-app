@@ -37,7 +37,7 @@ export class OrderDetailsPage {
       this.selectedOrder = data;
       // console.log(this.OrderDetail);
       // console.log(this.selectedOrder.amount);
-    }).catch(() => {});
+    }).catch(() => { });
   }
 
   clickItem(selectedItem: BucketItem) {
@@ -50,10 +50,18 @@ export class OrderDetailsPage {
     })
   }
 
-  clickAccept(orderId: string){
-    this.orderService.acceptOrder(orderId).then(() => {
-      this.navCtrl.pop();
-    }).catch(() => {});
+  clickAccept(order: Order) {
+    if (order.status.state == 'Assigned to Chef') {
+      this.orderService.updateOrderStatus(order.$key, 'Accepted by Chef').then(() => {
+        this.navCtrl.pop();
+      }).catch(() => { });
+    }
+
+    if (order.status.state == 'Accepted by Chef') {
+      this.orderService.updateOrderStatus(order.$key, 'Order Ready').then(() => {
+        this.navCtrl.pop();
+      }).catch(() => { });
+    }
   }
 
 }
