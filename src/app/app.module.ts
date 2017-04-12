@@ -11,6 +11,7 @@ import { AcceptedOrdersPage } from '../pages/accepted-orders/accepted-orders';
 import { PendingOrdersPage } from '../pages/pending-orders/pending-orders';
 import { TabsPage } from '../pages/tabs/tabs';
 import { OrderDetailsPage } from '../pages/order-details/order-details';
+import { OrderPrefsPage } from '../pages/order-prefs/order-prefs';
 
 import { AccountService } from '../services/account-service';
 import { OrderService } from '../services/order-service';
@@ -42,6 +43,7 @@ export const firebaseAuthConfig = {
     LoginPage,
     PendingOrdersPage,
     OrderDetailsPage,
+    OrderPrefsPage,
     TabsPage,
     OrderFilterByStatusPipe,
     ReversePipe
@@ -61,7 +63,8 @@ export const firebaseAuthConfig = {
     LoginPage,
     PendingOrdersPage,
     TabsPage,
-    OrderDetailsPage
+    OrderDetailsPage,
+    OrderPrefsPage
   ],
   providers: [
     StatusBar,

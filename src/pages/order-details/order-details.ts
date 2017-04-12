@@ -4,6 +4,7 @@ import { FoodService } from '../../services/food-service';
 import { OrderService } from '../../services/order-service';
 import { Order } from '../../models/order.model';
 import { BucketItem } from '../../models/bucketItem.model';
+import { OrderPrefsPage } from '../../pages/order-prefs/order-prefs';
 // import { OrderPrefsPage } from '../order-prefs/order-prefs'
 
 /*
@@ -41,13 +42,22 @@ export class OrderDetailsPage {
   }
 
   clickItem(selectedItem: BucketItem) {
+    // this.foodService.getFoodItemById(selectedItem.foodId).then((data) => {
+    //   // console.log(selectedItem);
+    //   this.navCtrl.push(OrderPrefsPage, {
+    //     item: selectedItem,
+    //     itemKey: selectedItem.foodId
+    //   })
+    // })
+
     this.foodService.getFoodItemById(selectedItem.foodId).then((data) => {
-      console.log(selectedItem);
-      // this.navCtrl.push(OrderPrefsPage, {
-      //   item: selectedItem,
-      //   foodItem: data
-      // })
-    })
+      // console.log(data);
+      this.navCtrl.push(OrderPrefsPage, {
+        foodItem: data,
+        item: selectedItem,
+        itemKey: selectedItem.$key
+      })
+    });
   }
 
   clickAccept(order: Order) {
@@ -63,5 +73,4 @@ export class OrderDetailsPage {
       }).catch(() => { });
     }
   }
-
 }
