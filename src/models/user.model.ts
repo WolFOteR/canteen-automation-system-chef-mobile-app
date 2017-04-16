@@ -2,8 +2,9 @@ export interface User {
     name: string,
     email: string,
     contact: string,
-    cabin: number,
+    cnic: string,
     password?: string,
+    address:string,
     imageURL?: string,
     $key?: string
 }

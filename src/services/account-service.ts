@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, ToastController } from 'ionic-angular';
 import { AngularFire, FirebaseAuthState } from 'angularfire2';
-
+import { User } from "../models/user.model";
 @Injectable()
 export class AccountService {
     constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController) { }
@@ -83,5 +83,36 @@ export class AccountService {
         }
 
         else return false;
+    }
+
+    getUserData() {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'Loading information...'
+            });
+            loading.present();
+
+            let currentUser = this.angularFire.auth;
+            currentUser.subscribe((data: FirebaseAuthState) => {
+                if (data) {
+                    this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).subscribe((chefData: any) => {
+                        let user: User = {
+                            name: data.auth.displayName,
+                            email: data.auth.email,
+                            cnic: chefData.cnic,
+                            address: chefData.address,
+                            contact: chefData.contact,
+                            imageURL: data.auth.photoURL
+                        }
+                        loading.dismiss();
+                        res(user);
+                    })
+                }else{
+                    loading.dismiss();
+                    rej("some issue");
+                }
+            })
+        }).catch((error) => {
+        })
     }
 }
