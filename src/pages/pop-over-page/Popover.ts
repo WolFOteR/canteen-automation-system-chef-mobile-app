@@ -4,27 +4,27 @@ import { ProfilePage } from "../profile/profile";
 import { PendingOrdersPage } from '../pending-orders/pending-orders';
 
 @Component({
-  template: 
+  template:
   `
-    <ion-list>
-      <button ion-item (click)="clickProfile()">Profile</button>
-      <button ion-item (click)="close()">Logout</button>
-    </ion-list>  
-  `
+  <ion-list no-lines>
+  <ion-item (click)="clickProfile()">Profile</ion-item>
+  <ion-item (click)="close()">Logout</ion-item>
+  </ion-list>
+`
 })
 export class PopoverPage {
-  constructor(public viewCtrl: ViewController, private navCrtl: NavController, private appCrtl: App  ) {}
+  constructor(public viewCtrl: ViewController, private navCrtl: NavController, private appCrtl: App) { }
 
   close() {
     this.viewCtrl.dismiss();
   }
 
-  clickProfile(){
-      console.log("consle");
-      this.viewCtrl.dismiss();
-      // this.pendingOrder.navCtrl
-      // this.navCrtl.push(ProfilePage);
-      this.appCrtl.getRootNav().push(ProfilePage);
+  clickProfile() {
+    console.log("consle");
+    this.viewCtrl.dismiss();
+    // this.pendingOrder.navCtrl
+    // this.navCrtl.push(ProfilePage);
+    this.appCrtl.getRootNav().push(ProfilePage);
 
   }
 }

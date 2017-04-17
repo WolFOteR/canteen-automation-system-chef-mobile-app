@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, ToastController } from 'ionic-angular';
-import { AngularFire, FirebaseAuthState } from 'angularfire2';
+import { AngularFire, FirebaseAuthState, FirebaseApp } from 'angularfire2';
 import { User } from "../models/user.model";
 @Injectable()
 export class AccountService {
+    firebaseApp: firebase.app.App;
     constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController) { }
 
     loginUser(email: string, password: string) {
@@ -73,8 +74,8 @@ export class AccountService {
                 }).present();
                 loading.dismiss();
                 rej(error);
-            })
-        })
+            });
+        });
     }
 
     checkUserIsLoggedIn() {
@@ -93,9 +94,9 @@ export class AccountService {
             loading.present();
 
             let currentUser = this.angularFire.auth;
-            currentUser.subscribe((data: FirebaseAuthState) => {
+            let clientAuthSubscription = currentUser.subscribe((data: FirebaseAuthState) => {
                 if (data) {
-                    this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).subscribe((chefData: any) => {
+                    let clientDataSubscription = this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).subscribe((chefData: any) => {
                         let user: User = {
                             name: data.auth.displayName,
                             email: data.auth.email,
@@ -106,13 +107,195 @@ export class AccountService {
                         }
                         loading.dismiss();
                         res(user);
+                        clientDataSubscription.unsubscribe();
+                        clientAuthSubscription.unsubscribe();
                     })
-                }else{
+                } else {
                     loading.dismiss();
-                    rej("some issue");
+                    rej("Error while fetching user data!");
+                        clientAuthSubscription.unsubscribe();
                 }
             })
         }).catch((error) => {
+            this.toastCtrl.create({
+                message: error.message,
+                duration: 4500
+            }).present();
         })
+    }
+
+    updateInfo(displayName: string, imageUrl: string) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'Updating Information...'
+            });
+            loading.present();
+            this.angularFire.auth.subscribe((user: FirebaseAuthState) => {
+                user.auth.updateProfile({
+                    displayName: displayName,
+                    photoURL: imageUrl
+                }).then(() => {
+                    this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                        name: displayName
+                    }).then(() => {
+                        this.toastCtrl.create({
+                            message: 'Information updated successfully!',
+                            duration: 4500
+                        }).present();
+                        loading.dismiss();
+                        res()
+                    }).catch((error => {
+                        this.toastCtrl.create({
+                            message: error.message,
+                            duration: 4500
+                        }).present();
+                        loading.dismiss();
+                        rej(error.message);
+                    }))
+                }).catch((error) => {
+                    this.toastCtrl.create({
+                        message: error.message,
+                        duration: 4500
+                    }).present();
+                    loading.dismiss();
+                    rej(error.message);
+                })
+            })
+        })
+    }
+
+    updateContact(contact: string) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'UPdating contact number...'
+            });
+            loading.present();
+            this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                contact: contact
+            }).then(() => {
+                this.toastCtrl.create({
+                    message: 'Contact updated successfully!',
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                res()
+            }).catch((error) => {
+                this.toastCtrl.create({
+                    message: error.message,
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                rej(error.message);
+            });
+        });
+    }
+
+    updateCnic(cnic: string) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'UPdating contact number...'
+            });
+            loading.present();
+            this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                cnic: cnic
+            }).then(() => {
+                this.toastCtrl.create({
+                    message: 'Cnic updated successfully!',
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                res()
+            }).catch((error) => {
+                this.toastCtrl.create({
+                    message: error.message,
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                rej(error.message);
+            });
+        });
+    }
+
+    updateEmail(email: string) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'Updating Information...'
+            });
+            loading.present();
+            this.angularFire.auth.subscribe((user: FirebaseAuthState) => {
+                user.auth.updateEmail(email).then(() => {
+                    this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                        email: email
+                    }).then(() => {
+                        this.toastCtrl.create({
+                            message: 'Email updated successfully!',
+                            duration: 4500
+                        }).present();
+                        loading.dismiss();
+                        res()
+                    }).catch((error => {
+                        this.toastCtrl.create({
+                            message: error.message,
+                            duration: 4500
+                        }).present();
+                        loading.dismiss();
+                        rej(error.message);
+                    }))
+                }).catch((error) => {
+                    this.toastCtrl.create({
+                        message: error.message,
+                        duration: 4500
+                    }).present();
+                    loading.dismiss();
+                    rej(error.message);
+                })
+            })
+        })
+    }
+
+
+    updateAddress(address: string) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'UPdating contact number...'
+            });
+            loading.present();
+            this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                address: address
+            }).then(() => {
+                this.toastCtrl.create({
+                    message: 'Address updated successfully!',
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                res();
+            }).catch((error) => {
+                this.toastCtrl.create({
+                    message: error.message,
+                    duration: 4500
+                }).present();
+                loading.dismiss();
+                rej(error.message);
+            });
+        });
+    }
+
+    uploadImage(data) {
+        return new Promise((res, rej) => {
+            let loading = this.loadingCtrl.create({
+                content: 'Uploading Image...'
+            });
+            loading.present();
+            let uploadTask = this.firebaseApp.storage().ref('/profile_images/' + localStorage.getItem('uid')).putString(data, 'base64', { contentType: 'image/jpg' });
+            uploadTask.on('state_changed', snapshot => {
+            }, function (error) {
+                loading.dismiss();
+                rej(error.message);
+            }, function () {
+                var downloadURL = uploadTask.snapshot.downloadURL;
+                loading.dismiss();
+                res(downloadURL);
+            });
+        });
     }
 }
