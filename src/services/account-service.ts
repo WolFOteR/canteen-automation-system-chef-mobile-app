@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, ToastController } from 'ionic-angular';
 import { AngularFire, FirebaseAuthState, FirebaseApp } from 'angularfire2';
-import { User } from "../models/user.model";
+import { StaffMember } from "../models/staff-member.model";
 @Injectable()
 export class AccountService {
     firebaseApp: firebase.app.App;
@@ -97,16 +97,17 @@ export class AccountService {
             let clientAuthSubscription = currentUser.subscribe((data: FirebaseAuthState) => {
                 if (data) {
                     let clientDataSubscription = this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).subscribe((chefData: any) => {
-                        let user: User = {
+                        let staffMember: StaffMember = {
                             name: data.auth.displayName,
                             email: data.auth.email,
                             cnic: chefData.cnic,
                             address: chefData.address,
                             contact: chefData.contact,
-                            imageURL: data.auth.photoURL
+                            imageURL: data.auth.photoURL,
+                            status: chefData.status
                         }
                         loading.dismiss();
-                        res(user);
+                        res(staffMember);
                         clientDataSubscription.unsubscribe();
                         clientAuthSubscription.unsubscribe();
                     })

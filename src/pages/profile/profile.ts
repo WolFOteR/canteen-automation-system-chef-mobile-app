@@ -4,7 +4,7 @@ import { AccountService } from '../../services/account-service';
 import { ReversePipe } from '../../pipes/reverse.pipe';
 import { OrderFilterByStatusPipe } from '../../pipes/order.pipe';
 import { OrderDetailsPage } from '../order-details/order-details';
-import { User } from "../../models/user.model";
+import { StaffMember } from "../../models/staff-member.model";
 import { Camera } from "ionic-native";
 
 
@@ -14,14 +14,15 @@ import { Camera } from "ionic-native";
 })
 export class ProfilePage {
 
-  user: User = {
+  staffMember: StaffMember = {
     name: '',
     email: '',
     contact: '',
     address: '',
-    password: '',
     imageURL: '',
-    cnic: ''
+    cnic: '',
+    $key: '',
+    status: ''
   }
   constructor(public navCtrl: NavController, private accountService: AccountService, private alertCtrl: AlertController, private actionCtrl: ActionSheetController) { }
 
@@ -40,7 +41,7 @@ export class ProfilePage {
       inputs: [
         {
           name: 'txtNewName',
-          value: this.user.name
+          value: this.staffMember.name
         }
       ],
       buttons: [
@@ -51,7 +52,7 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            this.accountService.updateInfo(data.txtNewName, this.user.imageURL).then(() => {
+            this.accountService.updateInfo(data.txtNewName, this.staffMember.imageURL).then(() => {
               this.loadUserData();
             })
           }
@@ -66,7 +67,7 @@ export class ProfilePage {
       inputs: [
         {
           name: 'txtEmail',
-          value: this.user.email
+          value: this.staffMember.email
         }
       ],
       buttons: [
@@ -92,7 +93,7 @@ export class ProfilePage {
       inputs: [
         {
           name: 'txtNewCnic',
-          value: this.user.cnic
+          value: this.staffMember.cnic
         }
       ],
       buttons: [
@@ -118,7 +119,7 @@ export class ProfilePage {
       inputs: [
         {
           name: 'txtNewAddress',
-          value: this.user.address
+          value: this.staffMember.address
         }
       ],
       buttons: [
@@ -144,7 +145,7 @@ export class ProfilePage {
       inputs: [
         {
           name: 'txtNewContact',
-          value: this.user.contact
+          value: this.staffMember.contact
         }
       ],
       buttons: [
@@ -185,8 +186,8 @@ export class ProfilePage {
               sourceType: Camera.PictureSourceType.PHOTOLIBRARY
             }).then((selectedImage) => {
               this.accountService.uploadImage(selectedImage).then((downloadUrl: string) => {
-                this.accountService.updateInfo(this.user.name, downloadUrl).then(() => {
-                  this.user.imageURL = downloadUrl;
+                this.accountService.updateInfo(this.staffMember.name, downloadUrl).then(() => {
+                  this.staffMember.imageURL = downloadUrl;
                   this.alertCtrl.create({
                     subTitle: 'Your image has been successfully updated.',
                     buttons: [
@@ -238,8 +239,8 @@ export class ProfilePage {
               sourceType: Camera.PictureSourceType.CAMERA
             }).then((selectedImage) => {
               this.accountService.uploadImage(selectedImage).then((downloadUrl: string) => {
-                this.accountService.updateInfo(this.user.name, downloadUrl).then(() => {
-                  this.user.imageURL = downloadUrl;
+                this.accountService.updateInfo(this.staffMember.name, downloadUrl).then(() => {
+                  this.staffMember.imageURL = downloadUrl;
                   this.alertCtrl.create({
                     subTitle: 'Your image has been successfully updated.',
                     buttons: [
@@ -283,8 +284,8 @@ export class ProfilePage {
   }
 
   loadUserData() {
-    this.accountService.getUserData().then((data: User) => {
-      this.user = data;
+    this.accountService.getUserData().then((data: StaffMember) => {
+      this.staffMember = data;
     }).catch((error) => {
       console.log(error);
     });

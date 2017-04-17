@@ -5,5 +5,6 @@ export interface StaffMember {
     cnic: string,
     address: string
     $key?: string,
+    imageURL?: string,
     status: string
 }
