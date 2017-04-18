@@ -8,7 +8,7 @@ import { PopoverPage } from '../pop-over-page/Popover';
 import { AccountService } from "../../services/account-service";
 import { ProfilePage } from "../profile/profile";
 import { LoginPage } from "../login/login";
-
+// import { Subscription } from "rxjs";
 
 // @Component({
 //   template: `
@@ -35,11 +35,11 @@ import { LoginPage } from "../login/login";
 })
 export class PendingOrdersPage {
   orderList: any;
-
+  // orderSubscription: Subscription;
   constructor(public navCtrl: NavController, private orderService: OrderService, private popOverCtrl: PopoverController, private accountService: AccountService, private app: App) { }
 
   ngOnInit() {
-    //this.orderList = this.orderService.getOrders();
+    this.orderList = this.orderService.getOrders();
   }
 
   clickOrder(orderId: string) {
@@ -60,10 +60,9 @@ export class PendingOrdersPage {
   clickLogout() {
     this.orderList = null;
     this.accountService.logoutUser().then(() => {
-      this.app.getRootNav().setRoot(LoginPage)
+      this.app.getRootNav().setRoot(LoginPage);
     }).catch((error) => {
       console.log(error);
-      
     })
   }
 

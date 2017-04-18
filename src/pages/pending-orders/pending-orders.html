@@ -27,7 +27,7 @@
     </ion-fab-list>
   </ion-fab>
 
-  <ion-list *ngFor="let order of orderList | async | reverse | filterOrderByStatus: 'Assigned to Chef'">
+  <ion-list *ngFor="let order of orderList | reverse | filterOrderByStatus: 'Assigned to Chef'">
     <button ion-item (click)="clickOrder(order.$key)">
         <h2>
           Order No.: {{order.orderId}}

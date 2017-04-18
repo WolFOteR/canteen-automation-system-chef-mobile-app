@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, App } from 'ionic-angular';
 import { OrderService } from '../../services/order-service';
 import { ReversePipe } from '../../pipes/reverse.pipe';
 import { OrderFilterByStatusPipe } from '../../pipes/order.pipe';
 import { OrderDetailsPage } from '../order-details/order-details';
 import { AccountService } from '../../services/account-service';
 import { ProfilePage } from '../profile/profile';
+import { LoginPage } from "../login/login";
 
 @Component({
   selector: 'page-accepted-orders',
@@ -14,7 +15,7 @@ import { ProfilePage } from '../profile/profile';
 export class AcceptedOrdersPage {
   orderList: any;
 
-  constructor(public navCtrl: NavController, private orderService: OrderService, private accountService: AccountService) { }
+  constructor(public navCtrl: NavController, private orderService: OrderService, private accountService: AccountService, private app: App) { }
 
   ngOnInit() {
     this.orderList = this.orderService.getOrders();
@@ -26,11 +27,16 @@ export class AcceptedOrdersPage {
     });
   }
 
-  clickLogout(){
-    this.accountService.logoutUser();
+  clickLogout() {
+    this.orderList = null;
+    this.accountService.logoutUser().then(() => {
+      this.app.getRootNav().setRoot(LoginPage);
+    }).catch((error) => {
+      console.log(error);
+    })
   }
-  
-  clickProfile(){
+
+  clickProfile() {
     this.navCtrl.push(ProfilePage);
   }
 }
