@@ -54,26 +54,26 @@ export class AccountService {
     }
 
     logoutUser() {
-        let loading = this.loadingCtrl.create({
-            content: 'Logging out...'
-        });
-        loading.present();
+        // let loading = this.loadingCtrl.create({
+        //     content: 'Logging out...'
+        // });
+        // loading.present();
         return new Promise((res, rej) => {
             this.angularFire.auth.logout().then(() => {
                 localStorage.removeItem('uid');
-                this.toastCtrl.create({
-                    message: 'Logged out successfully!',
-                    duration: 4500
-                }).present();
-                loading.dismiss();
+                // this.toastCtrl.create({
+                //     message: 'Logged out successfully!',
+                //     duration: 4500
+                // }).present();
+                // loading.dismiss();
                 res();
             }).catch((error) => {
-                this.toastCtrl.create({
-                    message: 'Failed to log out. Please try again later.',
-                    duration: 4500
-                }).present();
-                loading.dismiss();
-                rej(error);
+                // this.toastCtrl.create({
+                //     message: 'Failed to log out. Please try again later.',
+                //     duration: 4500
+                // }).present();
+                // loading.dismiss();
+                rej(error.message);
             });
         });
     }

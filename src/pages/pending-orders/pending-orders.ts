@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, PopoverController, ViewController } from 'ionic-angular';
+import { NavController, PopoverController, ViewController, App } from 'ionic-angular';
 import { OrderService } from '../../services/order-service';
 import { ReversePipe } from '../../pipes/reverse.pipe';
 import { OrderFilterByStatusPipe } from '../../pipes/order.pipe';
@@ -36,10 +36,10 @@ import { LoginPage } from "../login/login";
 export class PendingOrdersPage {
   orderList: any;
 
-  constructor(public navCtrl: NavController, private orderService: OrderService, private popOverCtrl: PopoverController, private accountService: AccountService) { }
+  constructor(public navCtrl: NavController, private orderService: OrderService, private popOverCtrl: PopoverController, private accountService: AccountService, private app: App) { }
 
   ngOnInit() {
-    this.orderList = this.orderService.getOrders();
+    //this.orderList = this.orderService.getOrders();
   }
 
   clickOrder(orderId: string) {
@@ -60,7 +60,10 @@ export class PendingOrdersPage {
   clickLogout() {
     this.orderList = null;
     this.accountService.logoutUser().then(() => {
-      this.navCtrl.setRoot(LoginPage);
+      this.app.getRootNav().setRoot(LoginPage)
+    }).catch((error) => {
+      console.log(error);
+      
     })
   }
 
