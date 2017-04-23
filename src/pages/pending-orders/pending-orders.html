@@ -26,7 +26,7 @@
       <button ion-fab (click)="clickLogout()"><ion-icon name="power"></ion-icon></button>
     </ion-fab-list>
   </ion-fab>
-
+<!--
   <ion-list *ngFor="let order of orderList | reverse | filterOrderByStatus: 'Assigned to Chef'">
     <button ion-item (click)="clickOrder(order.$key)">
         <h2>
@@ -38,6 +38,22 @@
     </button>
   </ion-list>
   <div *ngIf="(orderList | async | filterOrderByStatus: 'Assigned to Chef')?.length == 0" text-center class="center">
+    <h2>
+      No pending orders currently available.
+    </h2>
+  </div>-->
+
+    <ion-list *ngFor="let order of orderList | reverse | filterOrderByStatus: 'Assigned to Chef'">
+    <button ion-item (click)="clickOrder(order.$key)">
+        <h2>
+          Order No.: {{order.orderId}}
+        </h2>
+      <h2>
+        {{order.orderTime | date: 'dd/MM/yyyy HH:mm'}}
+        </h2>
+    </button>
+  </ion-list>
+  <div *ngIf="(orderList |filterOrderByStatus: 'Assigned to Chef')?.length == 0" text-center class="center">
     <h2>
       No pending orders currently available.
     </h2>

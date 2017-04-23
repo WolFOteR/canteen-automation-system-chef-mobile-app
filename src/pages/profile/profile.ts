@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, ActionSheetController } from 'ionic-angular';
 import { AccountService } from '../../services/account-service';
-import { ReversePipe } from '../../pipes/reverse.pipe';
-import { OrderFilterByStatusPipe } from '../../pipes/order.pipe';
 import { OrderDetailsPage } from '../order-details/order-details';
 import { StaffMember } from "../../models/staff-member.model";
 import { Camera } from "ionic-native";
@@ -198,7 +196,7 @@ export class ProfilePage {
                     ]
                   }).present();
                 }).catch(() => { })
-              }).catch(() => {
+              }).catch((error) => {
                 this.alertCtrl.create({
                   subTitle: 'Failed to upload image. Please try again.',
                   buttons: [

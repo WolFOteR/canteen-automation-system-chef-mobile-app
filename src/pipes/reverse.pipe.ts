@@ -8,7 +8,6 @@ export class ReversePipe {
         if (value == null) {
             return null;
         }
-
         return value.slice().reverse();
     }
 }

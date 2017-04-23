@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { LoadingController, ToastController } from 'ionic-angular';
 import { AngularFire, FirebaseAuthState, FirebaseApp } from 'angularfire2';
 import { StaffMember } from "../models/staff-member.model";
 @Injectable()
 export class AccountService {
-    firebaseApp: firebase.app.App;
-    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController) { }
+    firebaseApp: any;
+    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController, @Inject(FirebaseApp) firebaseApp: any) {
+        this.firebaseApp = firebaseApp;
+     }
 
     loginUser(email: string, password: string) {
         let loading = this.loadingCtrl.create({

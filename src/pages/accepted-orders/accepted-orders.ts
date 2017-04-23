@@ -7,6 +7,7 @@ import { OrderDetailsPage } from '../order-details/order-details';
 import { AccountService } from '../../services/account-service';
 import { ProfilePage } from '../profile/profile';
 import { LoginPage } from "../login/login";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'page-accepted-orders',
@@ -14,11 +15,15 @@ import { LoginPage } from "../login/login";
 })
 export class AcceptedOrdersPage {
   orderList: any;
-
+  orderSubscription: Subscription;
   constructor(public navCtrl: NavController, private orderService: OrderService, private accountService: AccountService, private app: App) { }
 
   ngOnInit() {
-    this.orderList = this.orderService.getOrders();
+    this.loadOrderData();
+  }
+
+  ionViewDidLeave(){
+    this.orderSubscription.unsubscribe();
   }
 
   clickOrder(orderId: string) {
@@ -28,15 +33,24 @@ export class AcceptedOrdersPage {
   }
 
   clickLogout() {
-    this.orderList = null;
+    this.orderSubscription.unsubscribe();
     this.accountService.logoutUser().then(() => {
       this.app.getRootNav().setRoot(LoginPage);
     }).catch((error) => {
+      this.loadOrderData();
       console.log(error);
     })
   }
 
+
   clickProfile() {
     this.navCtrl.push(ProfilePage);
   }
+
+  loadOrderData() {
+    this.orderSubscription = this.orderService.getOrders().subscribe((orderData) => {
+      this.orderList = orderData
+    })
+  }
+
 }

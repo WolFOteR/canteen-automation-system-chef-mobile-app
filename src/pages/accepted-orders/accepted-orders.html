@@ -13,7 +13,7 @@
     </ion-fab-list>
   </ion-fab>
 
-  <ion-list *ngFor="let order of orderList | async | reverse | filterOrderByStatus: 'Accepted by Chef'">
+  <ion-list *ngFor="let order of orderList | reverse | filterOrderByStatus: 'Accepted by Chef'">
     <button ion-item (click)="clickOrder(order.$key)">
         <h2>
           Order No.: {{order.orderId}}
@@ -23,7 +23,7 @@
         </h2>
     </button>
   </ion-list>
-  <div *ngIf="(orderList | async | filterOrderByStatus: 'Accepted by Chef')?.length == 0" text-center class="center">
+  <div *ngIf="(orderList | filterOrderByStatus: 'Accepted by Chef')?.length == 0" text-center class="center">
     <h2>
       No accepted orders currently available.
     </h2>

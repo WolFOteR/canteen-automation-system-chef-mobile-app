@@ -8,8 +8,9 @@
 
 <ion-content padding>
   
-
-  <img [src]="user.imageURL" class="rounded-circle" width="75%" padding>
+<a (click)="clickImage()">
+  <img [src]="staffMember.imageURL"  class="rounded-circle" width="75%" padding>
+  </a>
   <ion-list no-lines>
     <ion-item (click)="clickName()">
       <h2>Name</h2>
