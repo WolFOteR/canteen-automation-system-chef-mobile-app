@@ -28,11 +28,6 @@ export class ProfilePage {
     this.loadUserData();
   }
 
-  click(){
-    console.log("name");
-    
-  }
-
   clickName() {
     this.alertCtrl.create({
       subTitle: 'Enter new name',
@@ -85,7 +80,7 @@ export class ProfilePage {
     }).present();
   }
 
-  clickCinc() {
+  clickCnic() {
     this.alertCtrl.create({
       subTitle: 'Enter new name',
       inputs: [
