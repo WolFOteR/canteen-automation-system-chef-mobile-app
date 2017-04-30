@@ -43,25 +43,79 @@ export class OrderService {
         });
     }
 
+    getJobCount() {
+        return new Promise((res, rej) => {
+            let countSubscription = this.angularFire.database.object('/roles/chefs/' + localStorage.getItem('uid')).subscribe((data) => {
+                res(data);
+                countSubscription.unsubscribe();
+            })
+        })
+    }
+
     updateOrderStatus(orderId: string, status: string) {
         let loading = this.loadingCtrl.create({
             content: 'Updating order...'
         });
         loading.present();
         return new Promise((res, rej) => {
-            this.updateInventory(orderId).then(() => {
+            if (status == 'Accepted by Chef') {
+                this.updateInventory(orderId).then(() => {
+                    this.angularFire.database.object('/orders/' + orderId + '/status').update({
+                        state: status
+                    }).then(() => {
+                        this.toastCtrl.create({
+                            message: 'Order updated.',
+                            duration: 4500
+                        }).present();
+                        loading.dismiss();
+                        res();
+                    }).catch(() => {
+                        loading.dismiss();
+                        rej();
+                    });
+                })
+            }
+
+            else if (status == 'Order Ready') {
                 this.angularFire.database.object('/orders/' + orderId + '/status').update({
                     state: status
                 }).then(() => {
-                    this.toastCtrl.create({
-                        message: 'Order updated.',
-                        duration: 4500
-                    }).present().then(() => loading.dismiss());
-                    res();
+                    this.getJobCount().then((count: number) => {
+                        this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
+                            job_count: <number>count - 1
+                        }).then(() => {
+                            this.toastCtrl.create({
+                                message: 'Order updated.',
+                                duration: 4500
+                            }).present();
+                            loading.dismiss();
+                            res();
+                        }).catch(() => {
+                            rej();
+                        });
+                    }).catch(() => {
+                        loading.dismiss();
+                        rej()
+                    });
                 }).catch(() => {
-                    loading.dismiss().then(() => rej());
+                    loading.dismiss();
+                    rej();
                 });
-            })
+            }
+
+            // this.updateInventory(orderId).then(() => {
+            //     this.angularFire.database.object('/orders/' + orderId + '/status').update({
+            //         state: status
+            //     }).then(() => {
+            //         this.toastCtrl.create({
+            //             message: 'Order updated.',
+            //             duration: 4500
+            //         }).present().then(() => loading.dismiss());
+            //         res();
+            //     }).catch(() => {
+            //         loading.dismiss().then(() => rej());
+            //     });
+            // })
         })
     }
 
