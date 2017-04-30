@@ -45,8 +45,8 @@ export class OrderService {
 
     getJobCount() {
         return new Promise((res, rej) => {
-            let countSubscription = this.angularFire.database.object('/roles/chefs/' + localStorage.getItem('uid')).subscribe((data) => {
-                res(data);
+            let countSubscription = this.angularFire.database.object('/roles/chefs/' + localStorage.getItem('uid')).subscribe((data: any) => {
+                res(data.job_count);
                 countSubscription.unsubscribe();
             })
         })
@@ -93,7 +93,8 @@ export class OrderService {
                         }).catch(() => {
                             rej();
                         });
-                    }).catch(() => {
+                    }).catch((error) => {
+                        console.log(error);
                         loading.dismiss();
                         rej()
                     });

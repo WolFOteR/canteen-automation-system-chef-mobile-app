@@ -18,7 +18,7 @@ export class AcceptedOrdersPage {
   orderSubscription: Subscription;
   constructor(public navCtrl: NavController, private orderService: OrderService, private accountService: AccountService, private app: App) { }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.loadOrderData();
   }
 
