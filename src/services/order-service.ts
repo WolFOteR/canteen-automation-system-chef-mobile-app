@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, ToastController } from 'ionic-angular';
-import { AngularFire } from 'angularfire2';
+import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
+import { FoodService } from './food-service';
 import { Order } from '../models/order.model';
+import { InventoryItem } from '../models/inventory.model';
+import { FoodItem } from '../models/food.model';
+import { InventoryService } from './inventory-service';
 
 @Injectable()
 export class OrderService {
-    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController) { }
+    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController, private foodService: FoodService, private inventoryService: InventoryService) { }
 
     getOrders() {
         // this.angularFire.database.list('/orders/'
@@ -33,7 +37,7 @@ export class OrderService {
         loading.present();
         return new Promise((res, rej) => {
             this.angularFire.database.object('/orders/' + key).subscribe((data: Order) => {
-                loading.dismiss().catch(() => {});
+                loading.dismiss().catch(() => { });
                 res(data);
             });
         });
@@ -45,18 +49,55 @@ export class OrderService {
         });
         loading.present();
         return new Promise((res, rej) => {
-            this.angularFire.database.object('/orders/' + orderId + '/status').update({
-                state: status
-            }).then(() => {
-                this.toastCtrl.create({
-                    message: 'Order updated.',
-                    duration: 4500
-                }).present().then(() => loading.dismiss());
-                res();
-            }).catch(() => 
-            {
-                loading.dismiss().then(() => rej());
-            });
+            this.updateInventory(orderId).then(() => {
+                this.angularFire.database.object('/orders/' + orderId + '/status').update({
+                    state: status
+                }).then(() => {
+                    this.toastCtrl.create({
+                        message: 'Order updated.',
+                        duration: 4500
+                    }).present().then(() => loading.dismiss());
+                    res();
+                }).catch(() => {
+                    loading.dismiss().then(() => rej());
+                });
+            })
+        })
+    }
+
+    getOrderById(orderId: string) {
+        return new Promise((res, rej) => {
+            let orderSubscription = this.angularFire.database.object('/orders/' + orderId).subscribe((data) => {
+                // console.log(data);
+                res(data.items);
+                orderSubscription.unsubscribe();
+            })
+        });
+    }
+
+    updateInventory(orderId: string) {
+        return new Promise((res, rej) => {
+            this.getOrderById(orderId).then((orderFoodList: Array<any>) => {
+                console.log(orderFoodList);
+                orderFoodList.forEach((foodItem, index) => {
+                    this.foodService.getFoodItemById(foodItem.foodId).then((data: FoodItem) => {
+                        data.inventory_item.forEach((inventoryItem) => {
+                            console.log(inventoryItem);
+                            let quantity = foodItem.quantity * parseInt(inventoryItem.quantity)
+                            this.inventoryService.updateInventoryQuantity(inventoryItem.id, quantity).then((data) => {
+                                console.log(data);
+                            })
+                        });
+                    })
+                    if (index == (orderFoodList.length) - 1) {
+                        res();
+                    }
+                });
+                // res("");
+            }).catch((error) => {
+                console.log(error.message);
+                rej(error.message)
+            })
         })
     }
 }

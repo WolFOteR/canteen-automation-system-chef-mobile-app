@@ -72,5 +72,6 @@ export class OrderDetailsPage {
         this.navCtrl.pop();
       }).catch(() => { });
     }
+    // this.orderService.updateInventory(order.$key).then(() => { })
   }
 }

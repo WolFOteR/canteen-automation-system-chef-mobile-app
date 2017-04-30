@@ -20,6 +20,7 @@ import { PopoverPage } from '../pages/pop-over-page/Popover';
 import { AccountService } from '../services/account-service';
 import { OrderService } from '../services/order-service';
 import { FoodService } from '../services/food-service';
+import { InventoryService } from '../services/inventory-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -81,7 +82,8 @@ export const firebaseAuthConfig = {
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AccountService,
     OrderService,
-    FoodService
+    FoodService,
+    InventoryService
   ]
 })
 export class AppModule { }
