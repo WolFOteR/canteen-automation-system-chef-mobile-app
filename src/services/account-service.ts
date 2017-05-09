@@ -7,7 +7,7 @@ export class AccountService {
     firebaseApp: any;
     constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController, @Inject(FirebaseApp) firebaseApp: any) {
         this.firebaseApp = firebaseApp;
-     }
+    }
 
     loginUser(email: string, password: string) {
         let loading = this.loadingCtrl.create({
@@ -116,7 +116,7 @@ export class AccountService {
                 } else {
                     loading.dismiss();
                     rej("Error while fetching user data!");
-                        clientAuthSubscription.unsubscribe();
+                    clientAuthSubscription.unsubscribe();
                 }
             })
         }).catch((error) => {
@@ -300,5 +300,18 @@ export class AccountService {
                 res(downloadURL);
             });
         });
+    }
+
+    addNotificationToken(token: string) {
+        return new Promise((res, rej) => {
+            let clientAuth = this.angularFire.auth;
+            clientAuth.subscribe((data: FirebaseAuthState) => {
+                this.angularFire.database.list('notificationTokens/' + data.uid + '/').push(token).then(() => {
+                    clientAuth.unsubscribe();
+                    console.log('Token added sucessfully!');
+                    res('')
+                })
+            })
+        })
     }
 }

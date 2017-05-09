@@ -24,6 +24,8 @@ import { InventoryService } from '../services/inventory-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Push } from '@ionic-native/push';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 import { AngularFireModule, AuthMethods, AuthProviders } from 'angularfire2';
 
@@ -79,6 +81,8 @@ export const firebaseAuthConfig = {
   providers: [
     StatusBar,
     SplashScreen,
+    Push,
+    LocalNotifications,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AccountService,
     OrderService,
