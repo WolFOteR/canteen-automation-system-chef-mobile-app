@@ -260,7 +260,7 @@ export class AccountService {
     updateAddress(address: string) {
         return new Promise((res, rej) => {
             let loading = this.loadingCtrl.create({
-                content: 'UPdating contact number...'
+                content: 'Updating contact number...'
             });
             loading.present();
             this.angularFire.database.object('roles/chefs/' + localStorage.getItem('uid')).update({
@@ -304,7 +304,7 @@ export class AccountService {
 
     addNotificationToken(token: string) {
         return new Promise((res, rej) => {
-                this.angularFire.database.list('notificationTokens/' + localStorage.getItem('uid')).push(token).then(() => {
+                this.angularFire.database.object('notificationTokens/' + localStorage.getItem('uid') + '/id').set(token).then(() => {
                     console.log('Token added sucessfully!');
                     res('')
                 })
