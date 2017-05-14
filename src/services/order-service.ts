@@ -138,7 +138,7 @@ export class OrderService {
                     this.foodService.getFoodItemById(foodItem.foodId).then((data: FoodItem) => {
                         data.inventory_item.forEach((inventoryItem) => {
                             console.log(inventoryItem);
-                            let quantity = foodItem.quantity * parseInt(inventoryItem.quantity)
+                            let quantity = Number(foodItem.quantity) * Number(inventoryItem.quantity);
                             this.inventoryService.updateInventoryQuantity(inventoryItem.id, quantity).then((data) => {
                                 console.log(data);
                             })
