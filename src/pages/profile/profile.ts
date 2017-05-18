@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, ActionSheetController } from 'ionic-angular';
+import { NavController, AlertController, ActionSheetController, ToastController } from 'ionic-angular';
 import { AccountService } from '../../services/account-service';
 import { OrderDetailsPage } from '../order-details/order-details';
 import { StaffMember } from "../../models/staff-member.model";
@@ -12,6 +12,8 @@ import { Camera } from "ionic-native";
 })
 export class ProfilePage {
 
+  emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$';
+  numberRege = '\d+';
   staffMember: StaffMember = {
     name: '',
     email: '',
@@ -22,7 +24,7 @@ export class ProfilePage {
     $key: '',
     status: ''
   }
-  constructor(public navCtrl: NavController, private accountService: AccountService, private alertCtrl: AlertController, private actionCtrl: ActionSheetController) { }
+  constructor(public navCtrl: NavController, private accountService: AccountService, private alertCtrl: AlertController, private actionCtrl: ActionSheetController, private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.loadUserData();
@@ -45,9 +47,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            this.accountService.updateInfo(data.txtNewName, this.staffMember.imageURL).then(() => {
-              this.loadUserData();
-            })
+            if (data.txtNewName != '') {
+              this.accountService.updateInfo(data.txtNewName, this.staffMember.imageURL).then(() => {
+                this.loadUserData();
+              }).catch(() => { })
+            }
+            else {
+              this.toastCtrl.create({
+                message: 'Name cannot be empty',
+                duration: 4500
+              }).present();
+            }
           }
         }
       ]
@@ -71,9 +81,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            this.accountService.updateEmail(data.txtEmail).then(() => {
-              this.loadUserData();
-            })
+            if (this.emailRegex.match(data.txtEmail) && data.txtEmail != '') {
+              this.accountService.updateEmail(data.txtEmail).then(() => {
+                this.loadUserData();
+              })
+            }
+            else {
+              this.toastCtrl.create({
+                message: 'Please enter valid password',
+                duration: 4500
+              }).present();
+            }
           }
         }
       ]
@@ -82,7 +100,7 @@ export class ProfilePage {
 
   clickCnic() {
     this.alertCtrl.create({
-      subTitle: 'Enter new name',
+      subTitle: 'Enter new Cnic',
       inputs: [
         {
           name: 'txtNewCnic',
@@ -97,9 +115,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            this.accountService.updateCnic(data.txtNewCnic).then(() => {
-              this.loadUserData();
-            })
+            if (this.numberRege.match(data.txtNewCnic) && data.txtNewCnic != '') {
+              this.accountService.updateCnic(data.txtNewCnic).then(() => {
+                this.loadUserData();
+              })
+            }
+            else {
+              this.toastCtrl.create({
+                message: 'Please enter valid Cnic',
+                duration: 4500
+              }).present();
+            }
           }
         }
       ]
@@ -108,7 +134,7 @@ export class ProfilePage {
 
   clickAddress() {
     this.alertCtrl.create({
-      subTitle: 'Enter new name',
+      subTitle: 'Enter new address',
       inputs: [
         {
           name: 'txtNewAddress',
@@ -134,7 +160,7 @@ export class ProfilePage {
 
   clickContact() {
     this.alertCtrl.create({
-      subTitle: 'Enter new name',
+      subTitle: 'Enter new contact',
       inputs: [
         {
           name: 'txtNewContact',
@@ -149,9 +175,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            this.accountService.updateContact(data.txtNewContact).then(() => {
-              this.loadUserData();
-            })
+            if (this.numberRege.match(data.txtNewContact) && data.txtNewContact != '') {
+              this.accountService.updateContact(data.txtNewContact).then(() => {
+                this.loadUserData();
+              })
+            }
+            else {
+              this.toastCtrl.create({
+                message: 'Please enter valid Number',
+                duration: 4500
+              }).present();
+            }
           }
         }
       ]
@@ -282,5 +316,9 @@ export class ProfilePage {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  validateEmail() {
+    this.emailRegex.match
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { NavController, Platform, AlertController } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
 import { AccountService } from '../../services/account-service';
@@ -10,18 +11,23 @@ import { LocalNotifications } from '@ionic-native/local-notifications'
 })
 export class LoginPage {
 
-  constructor(public navCtrl: NavController, private accountService: AccountService, private alertCtrl: AlertController, private platform: Platform, private push: Push, private localNotifications: LocalNotifications) {
+  loginForm: FormGroup;
 
+  constructor(public navCtrl: NavController, private accountService: AccountService, private alertCtrl: AlertController, private platform: Platform, private push: Push, private localNotifications: LocalNotifications, private formBuilder: FormBuilder) {
+    this.loginForm = this.formBuilder.group({
+      email: new FormControl('',[Validators.required, Validators.email]),
+      pass: new FormControl('', Validators.compose([Validators.minLength(7), Validators.required]) )
+        });
   }
 
   clickLogin(email: string, password: string) {
     this.accountService.loginUser(email, password).then(() => {
       this.initPushNotification();
       this.navCtrl.setRoot({ component: TabsPage }.component);
-    }).catch(() => {});
+    }).catch(() => { });
   }
 
-   initPushNotification() {
+  initPushNotification() {
     if (!this.platform.is('cordova')) {
       console.log('Push notifications not initialized. Cordova is not available - Run in physical device');
       return;
@@ -44,13 +50,13 @@ export class LoginPage {
 
     pushObject.on('registration').subscribe((data: any) => {
       console.log(data.registrationId);
-      this.accountService.addNotificationToken(data.registrationId).then(()=>{
+      this.accountService.addNotificationToken(data.registrationId).then(() => {
       })
     })
 
     pushObject.on('notification').subscribe((data: any) => {
       console.log(data.message);
-      
+
       if (data.additionalData.foreground) {
         this.alertCtrl.create({
           title: 'Canteen Automation',
@@ -70,7 +76,7 @@ export class LoginPage {
         this.localNotifications.schedule({
           id: 1,
           text: 'Single ILocalNotification',
-          led:  'fff000'
+          led: 'fff000'
         });
       }
     });
