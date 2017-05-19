@@ -12,8 +12,8 @@ import { Camera } from "ionic-native";
 })
 export class ProfilePage {
 
-  emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$';
-  numberRege = '\d+';
+  // emailRegex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$';
+  // numberRege = '\d+';
   staffMember: StaffMember = {
     name: '',
     email: '',
@@ -81,17 +81,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            if (this.emailRegex.match(data.txtEmail) && data.txtEmail != '') {
+            // if (this.emailRegex.match(data.txtEmail)) {
               this.accountService.updateEmail(data.txtEmail).then(() => {
                 this.loadUserData();
               })
-            }
-            else {
-              this.toastCtrl.create({
-                message: 'Please enter valid password',
-                duration: 4500
-              }).present();
-            }
+            // }
+            // else {
+            //   this.toastCtrl.create({
+            //     message: 'Please enter valid password',
+            //     duration: 4500
+            //   }).present();
+            // }
           }
         }
       ]
@@ -115,17 +115,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            if (this.numberRege.match(data.txtNewCnic) && data.txtNewCnic != '') {
+            // if (this.numberRege.match(data.txtNewCnic) && data.txtNewCnic != '') {
               this.accountService.updateCnic(data.txtNewCnic).then(() => {
                 this.loadUserData();
               })
-            }
-            else {
-              this.toastCtrl.create({
-                message: 'Please enter valid Cnic',
-                duration: 4500
-              }).present();
-            }
+            // }
+            // else {
+            //   this.toastCtrl.create({
+            //     message: 'Please enter valid Cnic',
+            //     duration: 4500
+            //   }).present();
+            // }
           }
         }
       ]
@@ -175,17 +175,17 @@ export class ProfilePage {
         {
           text: 'Ok',
           handler: (data) => {
-            if (this.numberRege.match(data.txtNewContact) && data.txtNewContact != '') {
+            // if (this.numberRege.match(data.txtNewContact) && data.txtNewContact != '') {
               this.accountService.updateContact(data.txtNewContact).then(() => {
                 this.loadUserData();
               })
-            }
-            else {
-              this.toastCtrl.create({
-                message: 'Please enter valid Number',
-                duration: 4500
-              }).present();
-            }
+            // }
+            // else {
+            //   this.toastCtrl.create({
+            //     message: 'Please enter valid Number',
+            //     duration: 4500
+            //   }).present();
+            // }
           }
         }
       ]
@@ -316,9 +316,5 @@ export class ProfilePage {
     }).catch((error) => {
       console.log(error);
     });
-  }
-
-  validateEmail() {
-    this.emailRegex.match
   }
 }

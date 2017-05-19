@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingController, ToastController } from 'ionic-angular';
+import { LoadingController, ToastController, AlertController } from 'ionic-angular';
 import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
 import { FoodService } from './food-service';
 import { Order } from '../models/order.model';
@@ -9,7 +9,7 @@ import { InventoryService } from './inventory-service';
 
 @Injectable()
 export class OrderService {
-    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController, private foodService: FoodService, private inventoryService: InventoryService) { }
+    constructor(private angularFire: AngularFire, private loadingCtrl: LoadingController, private toastCtrl: ToastController, private foodService: FoodService, private inventoryService: InventoryService, private alertCtrl: AlertController) { }
 
     getOrders() {
         // this.angularFire.database.list('/orders/'
@@ -73,6 +73,17 @@ export class OrderService {
                         loading.dismiss();
                         rej();
                     });
+                }).catch((error) => {
+                    this.alertCtrl.create({
+                        title: 'Error',
+                        message: error,
+                        buttons: [{
+                            text: 'Ok',
+                            role: 'cancel'
+                        }]
+                    }).present();
+                    loading.dismiss();
+                    rej();
                 })
             }
 
@@ -132,26 +143,55 @@ export class OrderService {
 
     updateInventory(orderId: string) {
         return new Promise((res, rej) => {
+            this.checkInventory(orderId).then(() => {
+                this.getOrderById(orderId).then((orderFoodList: Array<any>) => {
+                    console.log(orderFoodList);
+                    orderFoodList.forEach((foodItem, index) => {
+                        this.foodService.getFoodItemById(foodItem.foodId).then((data: FoodItem) => {
+                            data.inventory_item.forEach((inventoryItem) => {
+                                console.log(inventoryItem);
+                                let quantity = Number(foodItem.quantity) * Number(inventoryItem.quantity);
+                                this.inventoryService.updateInventoryQuantity(inventoryItem.id, quantity).then((data) => {
+                                    console.log(data);
+                                }).catch()
+                            });
+                        })
+                        if (index == (orderFoodList.length) - 1) {
+                            res();
+                        }
+                    });
+                    // res("");
+                }).catch((error) => {
+                    console.log(error.message);
+                    rej(error.message)
+                })
+            }).catch((error) => {
+                console.log(error);
+                rej(error);
+            })
+        })
+    }
+
+    checkInventory(orderId: string) {
+        return new Promise((res, rej) => {
             this.getOrderById(orderId).then((orderFoodList: Array<any>) => {
-                console.log(orderFoodList);
                 orderFoodList.forEach((foodItem, index) => {
-                    this.foodService.getFoodItemById(foodItem.foodId).then((data: FoodItem) => {
-                        data.inventory_item.forEach((inventoryItem) => {
-                            console.log(inventoryItem);
-                            let quantity = Number(foodItem.quantity) * Number(inventoryItem.quantity);
-                            this.inventoryService.updateInventoryQuantity(inventoryItem.id, quantity).then((data) => {
-                                console.log(data);
+                    this.foodService.getFoodItemById(foodItem.foodId).then((foodList: FoodItem) => {
+                        foodList.inventory_item.forEach(inventoryItem => {
+                            this.inventoryService.getQuantityById(inventoryItem.id).then((quantity) => {
+                                let requiredQuantity = Number(foodItem.quantity) * Number(inventoryItem.quantity);
+                                if (Number(quantity) >= requiredQuantity) {
+                                    if (index == (orderFoodList.length) - 1) {
+                                        res('');
+                                    }
+                                }
+                                else {
+                                    rej('Inventory out of stock');
+                                }
                             })
                         });
                     })
-                    if (index == (orderFoodList.length) - 1) {
-                        res();
-                    }
                 });
-                // res("");
-            }).catch((error) => {
-                console.log(error.message);
-                rej(error.message)
             })
         })
     }
